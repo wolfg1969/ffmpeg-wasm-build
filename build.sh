@@ -52,6 +52,5 @@ emconfigure ./configure \
     --disable-doc
 make clean
 make && make install
-ls /dist
 
     
