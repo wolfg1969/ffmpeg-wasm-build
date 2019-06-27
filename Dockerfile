@@ -27,23 +27,17 @@ RUN apt-get update -qq && apt-get -y install \
   nodejs
 
 RUN mkdir /src /dist
-VOLUME /dist
+VOLUME /src /dist
 
-WORKDIR /src
+WORKDIR /root
 RUN git clone https://github.com/emscripten-core/emsdk.git
-WORKDIR /src/emsdk
+WORKDIR /root/emsdk
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python2.7 10
 RUN git pull
 RUN ./emsdk install latest
 RUN ./emsdk activate latest
-ENV PATH "$PATH:/src/emsdk:/src/emsdk/fastcomp/emscripten:/src/emsdk/node/8.9.1_64bit/bin"
+ENV PATH "$PATH:/root/emsdk:/root/emsdk/fastcomp/emscripten:/root/emsdk/node/8.9.1_64bit/bin"
 
-WORKDIR /src
-RUN git clone https://github.com/ksvc/FFmpeg.git ffmpeg
-WORKDIR /src/ffmpeg
-RUN git reset --hard origin/release/3.4
-
-COPY build.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/build.sh
-ENTRYPOINT ["build.sh"]
-
+COPY build.sh /root
+RUN chmod +x /root/build.sh
+ENTRYPOINT ["/root/build.sh"]
